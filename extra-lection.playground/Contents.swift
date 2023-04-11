@@ -9,14 +9,13 @@ class Truck {
     /// Unique number of the `Truck`.
     let truckNumber: String
 
-    /// Contains current list of all loads in the `Truck`.
-    var currentLoadsList = [String]()
+    // TODO: var currentLoadsList = Set<Load>()
 
     /// Initializes a new `Truck` object with the specified maximum weight capacity and truck number.
     ///
     /// - Parameters:
     /// - maxWeightCapacity: The maximum weight capacity of the truck.
-    /// - truckNumber: The unique identifier for the truck.
+    /// - truckNumber: The unique identifier number for the truck.
     ///
     /// - Throws:
     /// An error of type `Errors.valueAlreadyUsed` if the `truckNumber` parameter is already used for another `Truck` object.
@@ -25,7 +24,7 @@ class Truck {
     /// Each truck must have a unique `truckNumber` identifier. If the provided `truckNumber` is already used by another `Truck` object, an error of type  `Errors.valueAlreadyUsed` will be thrown.
     ///
     /// - Important:
-    /// The `usedNumbers` dictionary keeps track of all `truckNumber` values that have already been used. This dictionary is shared across all instances of the `Truck`  class.
+    /// The `usedNumbers` dictionary keeps track of all `truckNumber` values that have already been used. This dictionary is shared across all instances of the `Truck` class.
     init(maxWeightCapacity: Int, truckNumber: String) throws {
         if Truck.usedNumbers[truckNumber] == true {
             throw Errors.valueAlreadyUsed
@@ -36,26 +35,31 @@ class Truck {
         self.truckNumber = truckNumber
     }
 
-    /// Pick up `Load` into the `Truck`.
-    /// - Parameter load: the `Load`that will be loaded onto the `Truck`.
+    /// Pick up load onto the truck.
+    /// - Parameter load: the load that will be loaded onto the truck.
+    ///
     /// If the maximum load will be exceeded, the function will stop working.
     func pickUp(load: Load) {
-        if currentWeight + load.loadWeight > weightCapacity {
-            print("The maximum capacity has been exceeded. The Load cannot be loaded.")
+        if currentTruckLoad + load.loadWeight > weightCapacity {
+            print("The maximum capacity has been exceeded. The load cannot be loaded.")
             return
         } else {
-            currentWeight += load.loadWeight
+            currentTruckLoad += load.loadWeight
+           // TODO: currentLoadsList.append(load)
         }
     }
 
-    /// Function reduces the current weight. If the result is less than zero, returns false.
-    /// - Parameter weight: the value by which the current capacity will be reduced
+    /// Drop off load from the truck.
+    /// - Parameter load: the load that will be dropped off from the truck.
     func dropOff(load: Load) {
-        currentWeight -= load.loadWeight
-    }
-        // MARK: Private interface
+        currentTruckLoad -= load.loadWeight
+               // TODO: currentLoadsList.remove(load)
+            }
 
-    private(set) var currentWeight: Int = 0
+        // MARK: Private interface
+    /// Shows current capacity of the truck
+    private(set) var currentTruckLoad: Int = 0
+    /// Contains truck numbers that have already been used. 
     private(set) static var usedNumbers = [String : Bool]()
 }
 
@@ -88,7 +92,7 @@ class Storage {
     /// - Parameter putInWeight:instance of the class Load
     /// - Parameter truck: instance of class  Truck.
     func putInTruck(putInWeight: Load, truck: Truck) {
-        guard truck.currentWeight + putInWeight.loadWeight <= truck.weightCapacity else { return }
+        guard truck.currentTruckLoad + putInWeight.loadWeight <= truck.weightCapacity else { return }
 
         truck.pickUp(weight: Load(loadWeight: putInWeight.loadName.loadWeight))
         currentStorageWeight -= putInWeight.loadWeight
