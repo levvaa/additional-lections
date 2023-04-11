@@ -1,13 +1,31 @@
-/// Truck can pickUp loads from the storage, and dropOff loads into the storage.
+/// `Truck` can `pickUp` loads from the storage, and `dropOff` loads into the storage.
 class Truck {
 
     // MARK: internal interface
 
-    /// determines the maximum capacity of the truck.
+    /// The maximum capacity of the `Truck`.
     let weightCapacity: Int
-    /// individual number of the truck.
+
+    /// Unique number of the `Truck`.
     let truckNumber: String
 
+    /// Contains current list of all loads in the `Truck`.
+    var currentLoadsList = [String]()
+
+    /// Initializes a new `Truck` object with the specified maximum weight capacity and truck number.
+    ///
+    /// - Parameters:
+    /// - maxWeightCapacity: The maximum weight capacity of the truck.
+    /// - truckNumber: The unique identifier for the truck.
+    ///
+    /// - Throws:
+    /// An error of type `Errors.valueAlreadyUsed` if the `truckNumber` parameter is already used for another `Truck` object.
+    ///
+    /// - Note:
+    /// Each truck must have a unique `truckNumber` identifier. If the provided `truckNumber` is already used by another `Truck` object, an error of type  `Errors.valueAlreadyUsed` will be thrown.
+    ///
+    /// - Important:
+    /// The `usedNumbers` dictionary keeps track of all `truckNumber` values that have already been used. This dictionary is shared across all instances of the `Truck`  class.
     init(maxWeightCapacity: Int, truckNumber: String) throws {
         if Truck.usedNumbers[truckNumber] == true {
             throw Errors.valueAlreadyUsed
@@ -18,24 +36,25 @@ class Truck {
         self.truckNumber = truckNumber
     }
 
-    /// This function increases the current weight of truck.
-    /// - Parameter weight: instance of class Load with current weight.
-    /// If the maximum capacity of the truck is exceeded, returns false.
-    func pickUp(weight: Load) {
-
-        guard currentWeight + weight.loadWeight <= weightCapacity else { return }
-
-        currentWeight += weight.loadWeight
+    /// Pick up `Load` into the `Truck`.
+    /// - Parameter load: the `Load`that will be loaded onto the `Truck`.
+    /// If the maximum load will be exceeded, the function will stop working.
+    func pickUp(load: Load) {
+        if currentWeight + load.loadWeight > weightCapacity {
+            print("The maximum capacity has been exceeded. The Load cannot be loaded.")
+            return
+        } else {
+            currentWeight += load.loadWeight
+        }
     }
 
     /// Function reduces the current weight. If the result is less than zero, returns false.
     /// - Parameter weight: the value by which the current capacity will be reduced
-    /// If after unloading the scales of the total capacity of the truck, returns false
-    func dropOff(weight: Load) {
-
-        currentWeight -= weight.loadWeight
+    func dropOff(load: Load) {
+        currentWeight -= load.loadWeight
     }
         // MARK: Private interface
+
     private(set) var currentWeight: Int = 0
     private(set) static var usedNumbers = [String : Bool]()
 }
