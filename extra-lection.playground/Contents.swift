@@ -40,11 +40,11 @@ class Truck {
     ///
     /// If the maximum load will be exceeded, the function will stop working.
     func pickUp(load: Load) {
-        if currentTruckLoad + load.loadWeight > weightCapacity {
+        if currentWeightCapacity + load.loadWeight > weightCapacity {
             print("The maximum capacity has been exceeded. The load cannot be loaded.")
             return
         } else {
-            currentTruckLoad += load.loadWeight
+            currentWeightCapacity += load.loadWeight
            // TODO: currentLoadsList.append(load)
         }
     }
@@ -52,14 +52,14 @@ class Truck {
     /// Drop off load from the truck.
     /// - Parameter load: the load that will be dropped off from the truck.
     func dropOff(load: Load) {
-        currentTruckLoad -= load.loadWeight
-               // TODO: currentLoadsList.remove(load)
-            }
+        currentWeightCapacity -= load.loadWeight
+        // TODO: currentLoadsList.remove(load)
+    }
 
         // MARK: Private interface
     /// Shows current capacity of the truck
-    private(set) var currentTruckLoad: Int = 0
-    /// Contains truck numbers that have already been used. 
+    private(set) var currentWeightCapacity: Int = 0
+    /// Contains truck numbers that have already been used.
     private(set) static var usedNumbers = [String : Bool]()
 }
 
@@ -92,7 +92,7 @@ class Storage {
     /// - Parameter putInWeight:instance of the class Load
     /// - Parameter truck: instance of class  Truck.
     func putInTruck(putInWeight: Load, truck: Truck) {
-        guard truck.currentTruckLoad + putInWeight.loadWeight <= truck.weightCapacity else { return }
+        guard truck.currentWeightCapacity + putInWeight.loadWeight <= truck.weightCapacity else { return }
 
         truck.pickUp(weight: Load(loadWeight: putInWeight.loadName.loadWeight))
         currentStorageWeight -= putInWeight.loadWeight
